@@ -55,7 +55,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<Meteo> _getMeteo() async {
     print("DEB");
     /* ONLINE */
-    var data = await http.get("https://www.prevision-meteo.ch/services/json/limoges");
+    //var data = await http.get("https://www.prevision-meteo.ch/services/json/limoges");
+    var data = await http.get("https://drive.google.com/file/d/1VruHABobD3Uv4WjnqchqZyF49iQI8MRJ/view?usp=sharing");
     var jsonData = json.decode(data.body);
 
     /* OFFLINE
