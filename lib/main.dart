@@ -4,14 +4,23 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'serializer/meteo.dart';
+import 'serializer/cityInfo.dart';
+
+Map jsonData;
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  _loadJson() async {
+    var data = await(http.get("https://www.prevision-meteo.ch/services/json/limoges"));
+
+    return data;
+  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    var data = _loadJson();
+    jsonData = json.decode(data.body);
     return MaterialApp(
       title: 'Fluteo App',
       debugShowCheckedModeBanner: false,
@@ -52,27 +61,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  Future<Meteo> _getMeteo() async {
-    print("DEB");
-    /* ONLINE */
-    //var data = await http.get("https://www.prevision-meteo.ch/services/json/limoges");
-    var data = await http.get("https://drive.google.com/file/d/1VruHABobD3Uv4WjnqchqZyF49iQI8MRJ/view?usp=sharing");
-    var jsonData = json.decode(data.body);
 
-    /* OFFLINE
-    var data = await rootBundle.loadString('data/meteo.json');
-    Map jsonData = jsonDecode(data);
-    */
-    print("MIL");
-    var cij = jsonData["city_info"];
-    CityInfo ci = CityInfo(cij["name"], cij["country"], cij["lagitude"], cij["longitude"], cij["elevation"], cij["sunrise"], cij["sunset"]);
-    Meteo m = Meteo(ci);
-    print("OK");
-    return m;
-  }
 
   @override
   Widget build(BuildContext context) {
+    _getMeteo();
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -100,12 +93,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: <Widget>[
                   Text(snapshot.data.cityInfo.name.toString()),
                   Text(snapshot.data.cityInfo.country.toString()),
-                  Text(snapshot.data.cityInfo.lagitude.toString()),
+                  Text(snapshot.data.cityInfo.latitude.toString()),
                   Text(snapshot.data.cityInfo.longitude.toString()),
                   Text(snapshot.data.cityInfo.elevation.toString()),
                   Text(snapshot.data.cityInfo.sunrise.toString()),
-                  Text(snapshot.data.cityInfo.sunset.toString()),
-                  Text(snapshot.data.cityInfo.toString())
+                  Text(snapshot.data.cityInfo.sunset.toString())
                 ],
               );
             }
